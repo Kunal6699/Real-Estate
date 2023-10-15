@@ -65,6 +65,7 @@ export const setFastifyWebsocket = function () {
         });
         connection.socket.on("message", (message) => {
          // Instead of concatenating strings with the + operator, consider using template strings (backticks) for better readability.
+          
           console.log(`Web Socket - message ${parseMessage(message)}`);
           
         });
