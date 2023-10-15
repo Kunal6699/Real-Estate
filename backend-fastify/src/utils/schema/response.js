@@ -1,55 +1,29 @@
-const success = {
-  status: 200,
-  message: "Success!",
-  data: {}
-}
-export const responseSuccess = (
-  def = success
-) => ({
-  type: "object",
-  properties: {
-    status: {
-      type: "number",
-      default: def.status || success.status,
-    },
-    statusCode: {
-      type: "number",
-      default: def.status || success.status,
-    },
-    message: {
-      type: "string",
-      default: def.message || success.message,
-    },
-    data: def.data || success.data,
-  },
-});
+import { enquiryProperties } from "./schema.js";
+import { responseSuccess, responseError } from '../../../utils/schema/response.js';
 
-const error = {
-  status: 400,
-  error: "error",
-  message: "Something went wrong, please try again later.",
-}
-export const responseError = (
-  def = error
-) => ({
-  type: "object",
-  properties: {
-    status: {
-      type: "number",
-      default: def.status || error.status,
+/**
+ * Options for handling a delete request for an Enquiry.
+ * @param {Object} fastify - The Fastify instance.
+ * @param {Function} handler - The request handler.
+ * @returns {Object} - Fastify route options.
+ */
+export const deleteEnquiryOpts = (fastify, handler) => ({
+  preValidation: [fastify.authenticate],
+  schema: {
+    response: {
+      200: responseSuccess({
+        message: "Enquiry deleted!",
+        data: enquiryProperties
+      }),
+      400: responseError({
+        status: 400,
+        message: "Bad Request. Invalid input or parameters."
+      }),
+      404: responseError({
+        status: 404,
+        message: "Enquiry not found."
+      })
     },
-    statusCode: {
-      type: "number",
-      default: def.status || error.status,
-    },
-    error: {
-      type: "string",
-      default: def.error || error.error,
-    },
-    message: {
-      type: "string",
-      default: def.message || error.message,
-    },
-
   },
+  handler: handler,
 });
